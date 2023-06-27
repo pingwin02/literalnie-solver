@@ -5,7 +5,7 @@ def get_polish_words(odm_text):
     lines = odm_text.strip().split("\n")
     for line in lines:
         word = line.split(",")[0].strip()
-        if re.match("^[a-z]+$", word):
+        if re.match(r"^[a-ząćęłńóśźż]+$", word):
             words.add(word)
     return words
 
@@ -20,5 +20,5 @@ polish_words = get_polish_words(odm_text)
 polish_words = sorted(polish_words)
 
 # Zapisz wynik do nowego pliku
-with open("slownik.txt", "w") as file:
+with open("public/slownik.txt", "w", encoding="utf-8") as file:
     file.write("\n".join(polish_words))
