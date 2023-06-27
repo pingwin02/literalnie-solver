@@ -14,11 +14,12 @@ function PasswordForm() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("/odm.txt")
+    fetch("/react/odm.txt")
       .then((response) => response.text())
       .then((data) => {
         console.clear();
         console.log("Polish words (odm.txt) loaded.");
+        console.log("Number of lines:", data.trim().split("\n").length);
         const words = getPolishWords(data);
         setPolishWords(words);
         setIsLoading(false);
@@ -52,19 +53,27 @@ function PasswordForm() {
     for (const word of words) {
       if (word.length === inputString.length || dictionaryMode) {
         let matches = true;
-        for (let i = 0; i < inputString.length; i++) {
-          if (
-            (inputString[i] !== "_" && inputString[i] !== word[i]) ||
-            (inputString[i] === "_" && bannedChars.includes(word[i]))
-          ) {
+        if (bannedChars.split("").some((char) => word.includes(char))) {
+          matches = false;
+        }
+        for (let i = 0; i < inputString.length && matches; i++) {
+          if (inputString[i] !== "_" && inputString[i] !== word[i]) {
             matches = false;
-            break;
           }
         }
         if (
           matches &&
           (mustContain === "" ||
-            mustContain.split("").every((char) => word.includes(char)))
+            mustContain.split("").every((char) => {
+              const regex = new RegExp(char, "g");
+              const matches = (word.match(regex) || []).length;
+              const mustContainMatches = (mustContain.match(regex) || [])
+                .length;
+              if (inputString.includes(char)) {
+                return matches > mustContainMatches;
+              }
+              return matches >= mustContainMatches;
+            }))
         ) {
           possiblePasswords.push(word);
         }

@@ -28,17 +28,20 @@ const App = () => {
             Wpisz hasło, które chcesz rozwiązać, w polu{" "}
             <em>Podaj ciąg znaków</em>. Jeśli nie znasz litery wpisz <em>_</em>.
             Możesz wybrać również tryb słownikowy, wtedy długość hasła nie ma
-            znaczenia.
+            znaczenia. Przykład: <strong>_o_ek</strong>
           </li>
           <li>
             Wpisz litery, które chcesz zbanować, w polu{" "}
             <em>Podaj litery do zbanowania</em>. Jeśli nie chcesz zbanować
-            żadnej litery, pozostaw to pole puste.
+            żadnej litery, pozostaw to pole puste. Przykład:{" "}
+            <strong>ząć</strong>
           </li>
           <li>
             Wpisz litery, które muszą się znaleźć w haśle, w polu{" "}
             <em>Podaj litery, które muszą się znaleźć w haśle</em>. Jeśli nie
-            musi się znaleźć żadna litera, pozostaw to pole puste.
+            musi się znaleźć żadna litera, pozostaw to pole puste. W przypadku
+            sytuacji, gdy litera jest znana i musi się jeszcze przynajmniej raz
+            pojawić to również ją wpisz. Przykład: <strong>k</strong>
           </li>
           <li>
             Kliknij przycisk <em>Szukaj</em>.
@@ -48,7 +51,7 @@ const App = () => {
 
       <div>
         <Routes>
-          <Route path="/" element={<PasswordForm />} />
+          <Route path="/react" element={<PasswordForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
