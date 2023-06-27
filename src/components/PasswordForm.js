@@ -17,8 +17,7 @@ function PasswordForm() {
     fetch("/react/slownik.txt")
       .then((response) => response.text())
       .then((data) => {
-        console.clear();
-        console.log("Polish words (odm.txt) loaded.");
+        console.log("Polish words (slownik.txt) loaded.");
         console.log("Number of words:", data.trim().split("\n").length);
         const words = data.trim().split("\n");
         setPolishWords(words);
@@ -72,6 +71,7 @@ function PasswordForm() {
   };
 
   const handleSubmit = async (event) => {
+    console.clear();
     event.preventDefault();
     console.log("Input String:", inputString);
     console.log("Banned Chars:", bannedChars);
