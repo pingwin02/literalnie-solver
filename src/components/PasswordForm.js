@@ -14,13 +14,13 @@ function PasswordForm() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("/react/odm.txt")
+    fetch("/react/slownik.txt")
       .then((response) => response.text())
       .then((data) => {
         console.clear();
         console.log("Polish words (odm.txt) loaded.");
-        console.log("Number of lines:", data.trim().split("\n").length);
-        const words = getPolishWords(data);
+        console.log("Number of words:", data.trim().split("\n").length);
+        const words = data.trim().split("\n");
         setPolishWords(words);
         setIsLoading(false);
       })
@@ -29,18 +29,6 @@ function PasswordForm() {
         setIsLoading(false);
       });
   }, []);
-
-  const getPolishWords = (odmText) => {
-    const words = new Set();
-    const lines = odmText.trim().split("\n");
-    for (const line of lines) {
-      const word = line.split(",")[0].trim();
-      if (/^[a-z]+$/.test(word)) {
-        words.add(word);
-      }
-    }
-    return words;
-  };
 
   const findPossiblePasswords = (
     inputString,
