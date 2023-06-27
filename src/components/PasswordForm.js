@@ -17,9 +17,9 @@ function PasswordForm() {
     fetch("/react/slownik.txt")
       .then((response) => response.text())
       .then((data) => {
-        console.log("Polish words (slownik.txt) loaded.");
-        console.log("Number of words:", data.trim().split("\n").length);
         const words = data.trim().split("\n");
+        console.log("Polish words (slownik.txt) loaded.");
+        console.log("Number of words:", words.length);
         setPolishWords(words);
         setIsLoading(false);
       })
@@ -40,17 +40,20 @@ function PasswordForm() {
     for (const word of words) {
       if (word.length === inputString.length || dictionaryMode) {
         let matches = true;
-        if (bannedChars.split("").some((char) => word.includes(char))) {
-          matches = false;
-        }
         for (let i = 0; i < inputString.length && matches; i++) {
-          if (inputString[i] !== "_" && inputString[i] !== word[i]) {
+          if (
+            (inputString[i] !== "_" && inputString[i] !== word[i]) ||
+            (!dictionaryMode &&
+              inputString[i] === "_" &&
+              bannedChars.includes(word[i]))
+          ) {
             matches = false;
           }
         }
         if (
           matches &&
           (mustContain === "" ||
+            dictionaryMode ||
             mustContain.split("").every((char) => {
               const regex = new RegExp(char, "g");
               const matches = (word.match(regex) || []).length;
@@ -146,6 +149,7 @@ function PasswordForm() {
             onChange={(event) =>
               setBannedChars(event.target.value.toLowerCase())
             }
+            disabled={dictionaryMode}
           />
         </label>
         <br />
@@ -158,6 +162,7 @@ function PasswordForm() {
             onChange={(event) =>
               setMustContain(event.target.value.toLowerCase())
             }
+            disabled={dictionaryMode}
           />
         </label>
         <br />

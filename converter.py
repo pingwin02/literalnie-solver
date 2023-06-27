@@ -16,9 +16,9 @@ with open("odm.txt", "r", encoding="utf-8") as file:
 # Przetwórz tekst
 polish_words = get_polish_words(odm_text)
 
-# posortuj alfabetycznie
+# Posortuj alfabetycznie
 polish_words = sorted(polish_words)
 
 # Zapisz wynik do nowego pliku
-with open("public/slownik.txt", "w", encoding="utf-8") as file:
+with open("public/slownik.txt", "w", encoding="utf-8", newline="\n") as file:
     file.write("\n".join(polish_words))
