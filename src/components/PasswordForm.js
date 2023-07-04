@@ -42,9 +42,9 @@ function PasswordForm() {
         let matches = true;
         for (let i = 0; i < inputString.length && matches; i++) {
           if (
-            (inputString[i] !== "_" && inputString[i] !== word[i]) ||
+            (inputString[i] !== "?" && inputString[i] !== word[i]) ||
             (!dictionaryMode &&
-              inputString[i] === "_" &&
+              inputString[i] === "?" &&
               bannedChars.includes(word[i]))
           ) {
             matches = false;

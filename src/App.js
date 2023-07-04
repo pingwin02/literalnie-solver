@@ -26,9 +26,9 @@ const App = () => {
         <ol style={{ textAlign: "left" }}>
           <li>
             Wpisz hasło, które chcesz rozwiązać, w polu{" "}
-            <em>Podaj ciąg znaków</em>. Jeśli nie znasz litery wpisz <em>_</em>.
+            <em>Podaj ciąg znaków</em>. Jeśli nie znasz litery wpisz <em>?</em>.
             Możesz wybrać również tryb słownikowy, wtedy długość hasła nie ma
-            znaczenia. Przykład: <strong>___os</strong>
+            znaczenia. Przykład: <strong>???os</strong>
           </li>
           <li>
             Wpisz litery, które chcesz zbanować, w polu{" "}
