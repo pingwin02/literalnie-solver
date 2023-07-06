@@ -1,38 +1,119 @@
-.App {
+html {
+  background-color: #313338;
+  color: #fff;
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 20px;
+}
+#root {
+  max-width: 800px;
+  margin: 0 auto;
+}
+a {
+  color: #007bff;
+}
+a:hover,
+a:visited:hover {
+  color: #0056b3;
+  text-decoration: none;
+}
+a:visited {
+  color: #007bff;
+  text-decoration: none;
+}
+li {
+  margin: 15px;
+}
+p,
+label,
+ul,
+ol {
+  font-size-adjust: 15px;
+  display: inline-block;
+}
+ul,
+ol {
+  text-align: justify;
+  margin: 0px;
+}
+
+.password {
+  float: left;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+button {
+  padding: 8px 16px;
+  margin: 5px;
+  border-radius: 4px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 1rem;
+}
+button:hover {
+  background-color: #0056b3;
+}
+button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+.form-inputs {
+  margin: 20px;
+}
+.label-text {
+  margin: 10px;
+  display: block;
+}
+input[type="text"],
+input[type="number"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin: 5px;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 1rem;
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px #ccc;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.loading-animation {
+  font-style: italic;
+  color: gray;
+  margin-top: 10px;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media only screen and (max-width: 550px) {
+  html {
+    font-size: 15px;
   }
-  to {
-    transform: rotate(360deg);
+  #root {
+    width: 100%;
+  }
+  button,
+  input[type="text"],
+  input[type="number"] {
+    font-size: 15px;
+    margin: 2px;
   }
 }

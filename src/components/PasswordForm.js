@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./PasswordForm.css";
 
 function PasswordForm() {
   const [inputString, setInputString] = useState("");
@@ -9,7 +8,7 @@ function PasswordForm() {
   const [polishWords, setPolishWords] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [passwordsPerPage] = useState(30);
+  const [passwordsPerPage] = useState(40);
   const [dictionaryMode, setDictionaryMode] = useState(false);
 
   useEffect(() => {
@@ -129,8 +128,7 @@ function PasswordForm() {
     <div className="password-form">
       <div className="form-inputs">
         <label>
-          Podaj ciąg znaków:
-          <br />
+          <p className="label-text">Podaj hasło:</p>
           <input
             type="text"
             value={inputString}
@@ -141,8 +139,7 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          Podaj litery do zbanowania:
-          <br />
+          <p className="label-text">Podaj litery do zbanowania:</p>
           <input
             type="text"
             value={bannedChars}
@@ -154,8 +151,10 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          Podaj litery, które muszą się znaleźć w haśle:
-          <br />
+          <p className="label-text">
+            Podaj litery, <br />
+            które muszą się znaleźć w haśle:
+          </p>
           <input
             type="text"
             value={mustContain}
@@ -167,7 +166,7 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          Tryb słownikowy:
+          <p className="label-text">Tryb słownikowy:</p>
           <input
             type="checkbox"
             checked={dictionaryMode}
@@ -175,7 +174,6 @@ function PasswordForm() {
           />
         </label>
       </div>
-      <br />
       <button type="button" onClick={handleSubmit} disabled={isLoading}>
         Szukaj
       </button>
@@ -186,14 +184,12 @@ function PasswordForm() {
         <>
           {currentPasswords.length > 0 ? (
             <div>
-              <p>Znalazłem {possiblePasswords.length} możliwych haseł:</p>
-              <ul
-                style={{
-                  display: "inline-block",
-                }}
-              >
+              <h3>Znalazłem {possiblePasswords.length} możliwych haseł:</h3>
+              <ul>
                 {currentPasswords.map((password, index) => (
-                  <li key={index}>{password}</li>
+                  <li key={index} className="password">
+                    {password}
+                  </li>
                 ))}
               </ul>
               {/* Paginacja */}
@@ -201,6 +197,12 @@ function PasswordForm() {
                 <button
                   onClick={() => changePage(1)}
                   disabled={currentPage === 1}
+                >
+                  |&lt;
+                </button>
+                <button
+                  onClick={() => changePage(currentPage - 10)}
+                  disabled={currentPage <= 10}
                 >
                   &lt;&lt;
                 </button>
@@ -215,7 +217,25 @@ function PasswordForm() {
                   min="1"
                   max={Math.ceil(possiblePasswords.length / passwordsPerPage)}
                   value={currentPage}
-                  onChange={(event) => changePage(parseInt(event.target.value))}
+                  onChange={(event) => {
+                    const value = parseInt(event.target.value);
+                    if (
+                      value >= 1 &&
+                      value <=
+                        Math.ceil(possiblePasswords.length / passwordsPerPage)
+                    ) {
+                      changePage(value);
+                    } else if (
+                      value >
+                      Math.ceil(possiblePasswords.length / passwordsPerPage)
+                    ) {
+                      changePage(
+                        Math.ceil(possiblePasswords.length / passwordsPerPage)
+                      );
+                    } else {
+                      changePage(1);
+                    }
+                  }}
                 />
                 <button
                   onClick={() => changePage(currentPage + 1)}
@@ -225,6 +245,15 @@ function PasswordForm() {
                   }
                 >
                   &gt;
+                </button>
+                <button
+                  onClick={() => changePage(currentPage + 10)}
+                  disabled={
+                    currentPage >=
+                    Math.ceil(possiblePasswords.length / passwordsPerPage) - 10
+                  }
+                >
+                  &gt;&gt;
                 </button>
                 <button
                   onClick={() =>
@@ -237,12 +266,12 @@ function PasswordForm() {
                     Math.ceil(possiblePasswords.length / passwordsPerPage)
                   }
                 >
-                  &gt;&gt;
+                  &gt;|
                 </button>
               </div>
             </div>
           ) : (
-            <p>Brak możliwych haseł dla podanych ograniczeń.</p>
+            <h3>Brak możliwych haseł dla podanych ograniczeń.</h3>
           )}
         </>
       )}
