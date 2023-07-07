@@ -10,15 +10,15 @@ html {
   margin: 0 auto;
 }
 a {
-  color: #007bff;
+  color: #538d4e;
 }
 a:hover,
 a:visited:hover {
-  color: #0056b3;
+  color: #3e6b3a;
   text-decoration: none;
 }
 a:visited {
-  color: #007bff;
+  color: #538d4e;
   text-decoration: none;
 }
 li {
@@ -48,14 +48,14 @@ button {
   margin: 5px;
   border-radius: 4px;
   border: none;
-  background-color: #007bff;
+  background-color: #538d4e;
   color: #fff;
   cursor: pointer;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   font-size: 1rem;
 }
 button:hover {
-  background-color: #0056b3;
+  background-color: #3e6b3a;
 }
 button:disabled {
   background-color: #ccc;
@@ -81,7 +81,7 @@ input[type="number"] {
 }
 input[type="text"]:focus,
 input[type="number"]:focus {
-  border-color: #007bff;
+  border-color: #538d4e;
   box-shadow: 0 0 5px #ccc;
 }
 

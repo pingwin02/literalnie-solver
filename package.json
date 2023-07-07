@@ -1,7 +1,7 @@
 {
   "name": "literalnie-solver",
   "version": "0.1.0",
-  "homepage": "/react",
+  "homepage": "/",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",

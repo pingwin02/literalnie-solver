@@ -13,7 +13,7 @@ function PasswordForm() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("/react/slownik.txt")
+    fetch("/slownik.txt")
       .then((response) => response.text())
       .then((data) => {
         const words = data.trim().split("\n");
