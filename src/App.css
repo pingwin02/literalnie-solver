@@ -85,6 +85,17 @@ input[type="number"]:focus {
   box-shadow: 0 0 5px #ccc;
 }
 
+input[type="text"]:disabled,
+input[type="number"]:disabled {
+  color: #ccc;
+}
+
+input[type="checkbox"] {
+  accent-color: #538d4e;
+  margin: 15px;
+  transform: scale(1.5);
+}
+
 .loading-animation {
   font-style: italic;
   color: gray;

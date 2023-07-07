@@ -13,7 +13,7 @@ function PasswordForm() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("/slownik.txt")
+    fetch(process.env.PUBLIC_URL + "/slownik.txt")
       .then((response) => response.text())
       .then((data) => {
         const words = data.trim().split("\n");
@@ -166,12 +166,14 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          <p className="label-text">Tryb słownikowy:</p>
-          <input
-            type="checkbox"
-            checked={dictionaryMode}
-            onChange={(event) => setDictionaryMode(event.target.checked)}
-          />
+          <p className="label-text">
+            Tryb słownikowy:
+            <input
+              type="checkbox"
+              checked={dictionaryMode}
+              onChange={(event) => setDictionaryMode(event.target.checked)}
+            />
+          </p>
         </label>
       </div>
       <button type="button" onClick={handleSubmit} disabled={isLoading}>

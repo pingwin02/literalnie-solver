@@ -16,7 +16,12 @@ const HomePage = () => {
     <div className="home-page">
       <div className="home-page__content">
         <h1>
-          <img src="/favicon.ico" alt="logo" height="30" width="30" />
+          <img
+            src={process.env.PUBLIC_URL + "/literalnie.png"}
+            alt="logo"
+            height="30"
+            width="30"
+          />
           &nbsp; Literalnie Solver
         </h1>
         <p>

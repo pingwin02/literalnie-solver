@@ -4892,6 +4892,7 @@ antysyjonizm
 antysylwester
 antysymetria
 antysymetryczny
+antysystemowiec
 antysystemowy
 antyszambr
 antyszambrować
@@ -6940,6 +6941,7 @@ auletka
 aulidzki
 aulodia
 aulos
+aulowy
 auł
 aura
 auramina
@@ -34792,7 +34794,6 @@ facebookować
 facebookowicz
 facebookowiczka
 facebookowy
-facebookoza
 facecik
 facecja
 facecjonista
@@ -35629,7 +35630,6 @@ fejsbukoholizm
 fejsbukować
 fejsbukowicz
 fejsbukowiczka
-fejsbukoza
 fejsik
 fejsoholiczka
 fejsoholik
@@ -42568,6 +42568,7 @@ gratulacyjny
 gratulant
 gratulantka
 gratulować
+graty
 gratyfikacja
 gratyfikacyjny
 gratyfikować
@@ -59089,7 +59090,6 @@ komórkowaty
 komórkowiec
 komórkowo
 komórkowy
-komórkoza
 komp
 kompakcja
 kompakt
@@ -62231,7 +62231,6 @@ krawężniak
 krawężnica
 krawężnik
 krawężnikowy
-krawężnikoza
 krawiec
 krawiecki
 krawieckość
@@ -65270,7 +65269,6 @@ kwietnica
 kwietniczek
 kwietnik
 kwietnikowy
-kwietnikoza
 kwietniowy
 kwietniówka
 kwietność
@@ -99160,6 +99158,7 @@ pantomimista
 pantomimistka
 pantomina
 pantomografia
+pantomogram
 pantopizm
 pantopon
 pantostat
@@ -99248,7 +99247,6 @@ papierkomania
 papierkowaty
 papierkowość
 papierkowy
-papierkoza
 papiernia
 papiernica
 papiernictwo
@@ -99271,7 +99269,6 @@ papierośnica
 papierośnik
 papierowość
 papierowy
-papieroza
 papierówka
 papierówkowy
 papierzany
@@ -101363,6 +101360,7 @@ pepitka
 pepitko
 pepitkowy
 pepito
+pepitowy
 peplos
 peplum
 pepperoni
@@ -102520,6 +102518,7 @@ pierdolić
 pierdolnąć
 pierdolnięty
 pierdolnik
+pierdololo
 pierdoła
 pierdołek
 pierdołka
@@ -139257,7 +139256,6 @@ spachaczowaty
 spaciać
 spacja
 spacjować
-spacjoza
 spacyfikować
 spacystor
 spaczać
@@ -145611,7 +145609,6 @@ szczepienny
 szczepionka
 szczepionkowiec
 szczepionkowy
-szczepionkoza
 szczepka
 szczeponogi
 szczeponóg
@@ -146340,6 +146337,7 @@ szkaradziejstwo
 szkaradzieństwo
 szkaradztwo
 szkarlatyna
+szkarlatynowy
 szkarlet
 szkarłacica
 szkarłat
@@ -147854,7 +147852,6 @@ szyzmatyk
 ścieżek
 ścieżka
 ścieżkowy
-ścieżkoza
 ścieżyna
 ścieżynka
 ścięcie
@@ -148219,7 +148216,6 @@ szyzmatyk
 śmietnik
 śmietnikowiec
 śmietnikowy
-śmietnikoza
 śmietnisko
 śmietniskowy
 śmiga
@@ -150849,6 +150845,7 @@ tempietto
 templariusz
 templariusze
 templariuszka
+templatka
 templum
 tempo
 tempomat
@@ -155705,7 +155702,6 @@ twistować
 twistowy
 twiściarz
 twit
-twiteroza
 twitnąć
 twitować
 twitt
@@ -155713,7 +155709,6 @@ twitterianin
 twitterowicz
 twitterowiczka
 twitterowy
-twitteroza
 twittnąć
 twittować
 twix
@@ -162836,7 +162831,6 @@ wielokrążek
 wielokrążkowy
 wielokroć
 wielokropek
-wielokropkoza
 wielokrotna
 wielokrotnieć
 wielokrotność

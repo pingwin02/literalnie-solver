@@ -8,7 +8,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path={process.env.PUBLIC_URL} element={<HomePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
