@@ -7,7 +7,7 @@ const NotFoundPage = () => {
       <h1>404</h1>
       <p>Page not found.</p>
       <br />
-      <Link to="/">Go back to the main page</Link>
+      <Link to={process.env.PUBLIC_URL}>Go back to the main page</Link>
     </div>
   );
 };
