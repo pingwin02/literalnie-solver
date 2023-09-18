@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/literalnie-solver/static/css/main.6f7b5b78.css",
+    "main.js": "/literalnie-solver/static/js/main.9e024479.js",
+    "index.html": "/literalnie-solver/index.html",
+    "main.6f7b5b78.css.map": "/literalnie-solver/static/css/main.6f7b5b78.css.map",
+    "main.9e024479.js.map": "/literalnie-solver/static/js/main.9e024479.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6f7b5b78.css",
+    "static/js/main.9e024479.js"
+  ]
+}
