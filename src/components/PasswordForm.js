@@ -359,6 +359,19 @@ function PasswordForm() {
                 <button
                   onClick={() =>
                     changePage(
+                      Math.ceil(possiblePasswords.length / passwordsPerPage / 4)
+                    )
+                  }
+                  disabled={
+                    currentPage ===
+                    Math.ceil(possiblePasswords.length / passwordsPerPage / 4)
+                  }
+                >
+                  &#188;
+                </button>
+                <button
+                  onClick={() =>
+                    changePage(
                       Math.ceil(possiblePasswords.length / passwordsPerPage / 2)
                     )
                   }
@@ -368,6 +381,23 @@ function PasswordForm() {
                   }
                 >
                   &#189;
+                </button>
+                <button
+                  onClick={() =>
+                    changePage(
+                      Math.ceil(
+                        (3 * possiblePasswords.length) / passwordsPerPage / 4
+                      )
+                    )
+                  }
+                  disabled={
+                    currentPage ===
+                    Math.ceil(
+                      (3 * possiblePasswords.length) / passwordsPerPage / 4
+                    )
+                  }
+                >
+                  &#190;
                 </button>
                 <br />
                 <p>
