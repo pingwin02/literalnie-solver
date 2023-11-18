@@ -69,6 +69,10 @@ button:disabled {
   margin: 10px;
   display: block;
 }
+.password-input {
+  max-width: 15px;
+  margin: 5px 16px 5px 16px !important;
+}
 input[type="text"],
 input[type="number"] {
   padding: 8px;
@@ -126,5 +130,9 @@ input[type="checkbox"] {
   input[type="number"] {
     font-size: 15px;
     margin: 2px;
+  }
+
+  .password-input {
+    margin: 2px 7px 2px 7px !important;
   }
 }

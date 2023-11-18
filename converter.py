@@ -1,5 +1,7 @@
-import re, locale
+import re
+import locale
 locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")
+
 
 def get_polish_words(odm_text):
     words = set()
@@ -9,6 +11,7 @@ def get_polish_words(odm_text):
         if re.match(r"^[a-ząćęłńóśźż]+$", word):
             words.add(word)
     return words
+
 
 # Wczytaj plik odm.txt
 with open("odm.txt", "r", encoding="utf-8") as file:

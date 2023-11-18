@@ -8054,6 +8054,7 @@ bajkowość
 bajkowy
 bajkpark
 bajkparkowy
+bajlando
 bajonka
 bajończyk
 bajoński
@@ -43923,6 +43924,7 @@ hacking
 hackney
 hackować
 haczek
+haczka
 haczowianin
 haczowianka
 haczowski
@@ -85849,6 +85851,7 @@ neosecesjonistyczny
 neosemantyczny
 neosemantyzacja
 neosemantyzm
+neosędzia
 neoslawistyczny
 neoslawizm
 neosłowiański
@@ -115030,7 +115033,6 @@ półszklony
 półszlachetność
 półszlachetny
 półszmaciany
-półszoferek
 półszorek
 półszosta
 półszósta
@@ -139325,6 +139327,7 @@ spalenizna
 spaletyzować
 spalić
 spalina
+spaliniak
 spalinowiec
 spalinowóz
 spalinowy

@@ -38,10 +38,10 @@ const HomePage = () => {
         {expanded && (
           <ol>
             <li>
-              Wpisz hasło, które chcesz rozwiązać, w polu{" "}
-              <em>Podaj ciąg znaków</em>. Jeśli nie znasz litery, wpisz{" "}
-              <em>?</em>. Możesz również wybrać tryb słownikowy, wtedy długość
-              hasła nie ma znaczenia. Przykład: <strong>???os</strong>
+              Wpisz hasło, które chcesz rozwiązać, w polu <em>Podaj hasło</em>.
+              Jeśli nie znasz litery zostaw pole puste. Możesz również wybrać
+              tryb słownikowy, wtedy długość hasła nie ma znaczenia. Przykład:{" "}
+              <strong>???os</strong>
             </li>
             <li>
               Wpisz litery, które chcesz zbanować, w polu{" "}
