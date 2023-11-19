@@ -281,24 +281,6 @@ function PasswordForm() {
               </ul>
               {/* Paginacja */}
               <div className="pagination">
-                <button
-                  onClick={() => changePage(1)}
-                  disabled={currentPage === 1}
-                >
-                  |&lt;
-                </button>
-                <button
-                  onClick={() => changePage(currentPage - 10)}
-                  disabled={currentPage <= 10}
-                >
-                  &lt;&lt;
-                </button>
-                <button
-                  onClick={() => changePage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  &lt;
-                </button>
                 <input
                   type="number"
                   min="1"
@@ -324,6 +306,25 @@ function PasswordForm() {
                     }
                   }}
                 />
+                <br />
+                <button
+                  onClick={() => changePage(1)}
+                  disabled={currentPage === 1}
+                >
+                  |&lt;
+                </button>
+                <button
+                  onClick={() => changePage(currentPage - 10)}
+                  disabled={currentPage <= 10}
+                >
+                  &lt;&lt;
+                </button>
+                <button
+                  onClick={() => changePage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  &lt;
+                </button>
                 <button
                   onClick={() => changePage(currentPage + 1)}
                   disabled={
