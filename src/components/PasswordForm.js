@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { LanguageContext } from "../App";
+import translations from "../translations";
+import { findPossiblePasswords } from "../utils/findPossiblePasswords";
 
 function PasswordForm() {
+  const { language, setLanguage } = useContext(LanguageContext);
   const PASSWORD_LENGTH = 5;
 
   const [inputString, setInputString] = useState("");
@@ -11,7 +15,7 @@ function PasswordForm() {
   const [bannedChars, setBannedChars] = useState("");
   const [mustContain, setMustContain] = useState("");
   const [possiblePasswords, setPossiblePasswords] = useState([]);
-  const [polishWords, setPolishWords] = useState(new Set());
+  const [words, setWords] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [passwordsPerPage] = useState(40);
@@ -19,20 +23,24 @@ function PasswordForm() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(process.env.PUBLIC_URL + "/slownik.txt")
+    const dictionaryFile =
+      language === "pl" ? "/slownik.txt" : "/dictionary.txt";
+    fetch(process.env.PUBLIC_URL + dictionaryFile)
       .then((response) => response.text())
       .then((data) => {
-        const words = data.trim().split("\n");
-        console.log("Polish words (slownik.txt) loaded.");
-        console.log("Number of words:", words.length);
-        setPolishWords(words);
+        const wordsArray = data.trim().split("\n");
+        console.log(
+          `${language === "pl" ? "Polish" : "English"} words loaded.`
+        );
+        console.log("Number of words:", wordsArray.length);
+        setWords(wordsArray);
         setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
         setIsLoading(false);
       });
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     if (dictionaryMode) {
@@ -44,48 +52,13 @@ function PasswordForm() {
     }
   }, [dictionaryMode]);
 
-  const findPossiblePasswords = (
-    inputString,
-    bannedChars,
-    mustContain,
-    words
-  ) => {
-    const possiblePasswords = [];
+  useEffect(() => {
+    setPossiblePasswords([]);
+    setCurrentPage(1);
+  }, [language]);
 
-    for (const word of words) {
-      if (word.length === inputString.length || dictionaryMode) {
-        let matches = true;
-        for (let i = 0; i < inputString.length && matches; i++) {
-          if (
-            (inputString[i] !== "?" && inputString[i] !== word[i]) ||
-            (!dictionaryMode &&
-              inputString[i] === "?" &&
-              bannedChars.includes(word[i]))
-          ) {
-            matches = false;
-          }
-        }
-        if (
-          matches &&
-          (mustContain === "" ||
-            dictionaryMode ||
-            mustContain.split("").every((char) => {
-              const regex = new RegExp(char, "g");
-              const matches = (word.match(regex) || []).length;
-              const mustContainMatches = (mustContain.match(regex) || [])
-                .length;
-              if (inputString.includes(char)) {
-                return matches > mustContainMatches;
-              }
-              return matches >= mustContainMatches;
-            }))
-        ) {
-          possiblePasswords.push(word);
-        }
-      }
-    }
-
-    return possiblePasswords;
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
   };
 
   const handleInput = (event, index) => {
@@ -134,21 +107,20 @@ function PasswordForm() {
       query,
       bannedChars,
       mustContain,
-      polishWords
+      words,
+      dictionaryMode
     );
     console.log("Possible Passwords:", passwords);
     setPossiblePasswords(passwords);
     setIsLoading(false);
     setCurrentPage(1);
     await new Promise((resolve) => setTimeout(resolve, 100));
-    // skocz na dół strony z animacją
     window.scrollTo({
       top: document.body.scrollHeight,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   };
 
-  // Obliczanie indeksu pierwszego i ostatniego hasła na danej stronie
   const indexOfLastPassword = currentPage * passwordsPerPage;
   const indexOfFirstPassword = indexOfLastPassword - passwordsPerPage;
   const currentPasswords = possiblePasswords.slice(
@@ -156,30 +128,12 @@ function PasswordForm() {
     indexOfLastPassword
   );
 
-  // Funkcja do zmiany strony
-  const changePage = (pageNumber) => {
-    if (
-      pageNumber > 0 &&
-      pageNumber <= Math.ceil(possiblePasswords.length / passwordsPerPage)
-    ) {
-      setCurrentPage(pageNumber);
-      // poczekaj 50ms, aż się zaktualizuje currentPage
-      setTimeout(() => {
-        // skocz na dół strony z animacją
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: "smooth",
-        });
-      }, 50);
-    }
-  };
-
   const renderInputFields = () => {
     if (!dictionaryMode) {
       return (
         <>
           <label>
-            <p className="label-text">Podaj hasło:</p>
+            <p className="label-text">{translations[language].enterPassword}</p>
           </label>
           <br />
           {[...Array(PASSWORD_LENGTH)].map((_, index) => (
@@ -205,7 +159,7 @@ function PasswordForm() {
     } else {
       return (
         <label>
-          <p className="label-text">Podaj hasło:</p>
+          <p className="label-text">{translations[language].enterPassword}</p>
           <input
             type="text"
             value={inputString}
@@ -218,13 +172,28 @@ function PasswordForm() {
     }
   };
 
+  const changePage = (pageNumber) => {
+    if (
+      pageNumber > 0 &&
+      pageNumber <= Math.ceil(possiblePasswords.length / passwordsPerPage)
+    ) {
+      setCurrentPage(pageNumber);
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth"
+        });
+      }, 50);
+    }
+  };
+
   return (
     <div className="password-form">
       <div className="form-inputs">
         {renderInputFields()}
         <br />
         <label>
-          <p className="label-text">Podaj litery do zbanowania:</p>
+          <p className="label-text">{translations[language].bannedChars}</p>
           <input
             type="text"
             value={bannedChars}
@@ -236,10 +205,7 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          <p className="label-text">
-            Podaj litery, <br />
-            które muszą się znaleźć w haśle:
-          </p>
+          <p className="label-text">{translations[language].mustContain}</p>
           <input
             type="text"
             value={mustContain}
@@ -252,7 +218,7 @@ function PasswordForm() {
         <br />
         <label>
           <p className="label-text">
-            Tryb słownikowy:
+            {translations[language].dictionaryMode}
             <input
               type="checkbox"
               checked={dictionaryMode}
@@ -260,18 +226,54 @@ function PasswordForm() {
             />
           </p>
         </label>
+        <br />
+        <label>
+          <p className="label-text">{translations[language].languageToggle}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <label
+              style={{ display: "flex", alignItems: "center", gap: "5px" }}
+            >
+              <input
+                type="radio"
+                value="pl"
+                checked={language === "pl"}
+                onChange={handleLanguageChange}
+                style={{ transform: "scale(1.5)", accentColor: "green" }}
+              />
+              <span>polski</span>
+            </label>
+            <label
+              style={{ display: "flex", alignItems: "center", gap: "5px" }}
+            >
+              <input
+                type="radio"
+                value="en"
+                checked={language === "en"}
+                onChange={handleLanguageChange}
+                style={{ transform: "scale(1.5)", accentColor: "green" }}
+              />
+              <span>english</span>
+            </label>
+          </div>
+        </label>
       </div>
       <button type="button" onClick={handleSubmit} disabled={isLoading}>
-        Szukaj
+        {translations[language].search}
       </button>
       <br />
       {isLoading ? (
-        <div className="loading-animation">Ładowanie...</div>
+        <div className="loading-animation">
+          {translations[language].loading}
+        </div>
       ) : (
         <>
           {currentPasswords.length > 0 ? (
             <div>
-              <h3>Znalazłem {possiblePasswords.length} możliwych haseł:</h3>
+              <h3>
+                {translations[language].foundPasswords(
+                  possiblePasswords.length
+                )}
+              </h3>
               <ul>
                 {currentPasswords.map((password, index) => (
                   <li key={index} className="password">
@@ -279,7 +281,6 @@ function PasswordForm() {
                   </li>
                 ))}
               </ul>
-              {/* Paginacja */}
               <div className="pagination">
                 <input
                   type="number"
@@ -402,13 +403,15 @@ function PasswordForm() {
                 </button>
                 <br />
                 <p>
-                  Strona {currentPage} z{" "}
-                  {Math.ceil(possiblePasswords.length / passwordsPerPage)}
+                  {translations[language].page(
+                    currentPage,
+                    Math.ceil(possiblePasswords.length / passwordsPerPage)
+                  )}
                 </p>
               </div>
             </div>
           ) : (
-            <h3>Brak możliwych haseł dla podanych ograniczeń.</h3>
+            <h3>{translations[language].noPasswords}</h3>
           )}
         </>
       )}

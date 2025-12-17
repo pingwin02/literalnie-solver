@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import PasswordForm from "./PasswordForm";
+import { LanguageContext } from "../App";
+import translations from "../translations";
 
 const HomePage = () => {
+  const { language } = useContext(LanguageContext);
   const [expanded, setExpanded] = useState(false);
 
   const toggleInstructions = () => {
@@ -11,6 +14,8 @@ const HomePage = () => {
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const text = translations[language].homePage;
 
   return (
     <div className="home-page">
@@ -22,42 +27,18 @@ const HomePage = () => {
             height="30"
             width="30"
           />
-          &nbsp; Literalnie Solver
+          &nbsp; {text.title}
         </h1>
-        <p>
-          Aplikacja do rozwiązywania zagadek z gry{" "}
-          <a href="https://literalnie.fun/" target="_blank" rel="noreferrer">
-            Literalnie
-          </a>
-          .
-        </p>
+        <p>{text.description}</p>
         <br />
         <button onClick={toggleInstructions}>
-          {expanded ? "Schowaj instrukcję" : "Pokaż instrukcję"}
+          {expanded ? text.hideInstructions : text.showInstructions}
         </button>
         {expanded && (
           <ol>
-            <li>
-              Wpisz hasło, które chcesz rozwiązać, w polu <em>Podaj hasło</em>.
-              Jeśli nie znasz litery zostaw pole puste. Możesz również wybrać
-              tryb słownikowy, wtedy długość hasła nie ma znaczenia. Przykład:{" "}
-              <strong>???os</strong>
-            </li>
-            <li>
-              Wpisz litery, które chcesz zbanować, w polu{" "}
-              <em>Podaj litery do zbanowania</em>. Jeśli nie chcesz zbanować
-              żadnej litery, pozostaw to pole puste. Przykład:{" "}
-              <strong>o</strong>
-            </li>
-            <li>
-              Wpisz litery, które muszą się znaleźć w haśle, w polu{" "}
-              <em>Podaj litery, które muszą się znaleźć w haśle</em>. Jeśli nie
-              musi się znaleźć żadna litera, pozostaw to pole puste. Przykład:{" "}
-              <strong>s</strong>
-            </li>
-            <li>
-              Kliknij przycisk <em>Szukaj</em>.
-            </li>
+            {text.instructions.map((instruction, index) => (
+              <li key={index}>{instruction}</li>
+            ))}
           </ol>
         )}
       </div>
@@ -67,17 +48,17 @@ const HomePage = () => {
       <div className="home-page__footer">
         <p>
           <a
-            href="https://pingwiniasty.ct8.pl/"
+            href={`https://pingwiniasty.pl/${language === "en" ? "en" : ""}`}
             target="_blank"
             rel="noreferrer"
           >
             Pingwiniasty
           </a>
           <br />
-          &copy; 2023
+          &copy; 2025
         </p>
         <br />
-        <button onClick={handleScrollTop}>Do góry</button>
+        <button onClick={handleScrollTop}>{text.scrollTop}</button>
       </div>
     </div>
   );
