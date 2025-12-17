@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/literalnie-solver/static/css/main.adc305cf.css",
-    "main.js": "/literalnie-solver/static/js/main.bb8072cb.js",
+    "main.js": "/literalnie-solver/static/js/main.d9586947.js",
     "index.html": "/literalnie-solver/index.html",
     "main.adc305cf.css.map": "/literalnie-solver/static/css/main.adc305cf.css.map",
-    "main.bb8072cb.js.map": "/literalnie-solver/static/js/main.bb8072cb.js.map"
+    "main.d9586947.js.map": "/literalnie-solver/static/js/main.d9586947.js.map"
   },
   "entrypoints": [
     "static/css/main.adc305cf.css",
-    "static/js/main.bb8072cb.js"
+    "static/js/main.d9586947.js"
   ]
 }
