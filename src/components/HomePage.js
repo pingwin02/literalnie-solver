@@ -48,7 +48,7 @@ const HomePage = () => {
       <div className="home-page__footer">
         <p>
           <a
-            href={`https://pingwiniasty.pl/${language === "en" ? "en" : ""}`}
+            href={`https://github.com/pingwin02/literalnie-solver`}
             target="_blank"
             rel="noreferrer"
           >
