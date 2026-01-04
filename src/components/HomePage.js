@@ -50,15 +50,16 @@ const HomePage = () => {
           <a
             href={`https://github.com/pingwin02/literalnie-solver`}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             Pingwiniasty
           </a>
           <br />
-          &copy; 2025
+          &copy; 2026
         </p>
-        <br />
-        <button onClick={handleScrollTop}>{text.scrollTop}</button>
+        <div className="mobileButton">
+          <button onClick={handleScrollTop}>{text.scrollTop}</button>
+        </div>
       </div>
     </div>
   );

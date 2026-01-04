@@ -118,6 +118,10 @@ input[type="checkbox"] {
   }
 }
 
+.mobileButton {
+  display: none;
+}
+
 @media only screen and (max-width: 550px) {
   html {
     font-size: 15px;
@@ -134,5 +138,9 @@ input[type="checkbox"] {
 
   .password-input {
     margin: 2px 7px 2px 7px !important;
+  }
+
+  .mobileButton {
+    display: block;
   }
 }

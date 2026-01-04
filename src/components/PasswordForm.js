@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { LanguageContext } from "../App";
 import translations from "../translations";
 import { findPossiblePasswords } from "../utils/findPossiblePasswords";
@@ -6,6 +6,8 @@ import { findPossiblePasswords } from "../utils/findPossiblePasswords";
 function PasswordForm() {
   const { language, setLanguage } = useContext(LanguageContext);
   const PASSWORD_LENGTH = 5;
+
+  const text = translations[language];
 
   const [inputString, setInputString] = useState("");
   const [inputLetters, setInputLetters] = useState(
@@ -15,11 +17,43 @@ function PasswordForm() {
   const [bannedChars, setBannedChars] = useState("");
   const [mustContain, setMustContain] = useState("");
   const [possiblePasswords, setPossiblePasswords] = useState([]);
-  const [words, setWords] = useState(new Set());
+  const [words, setWords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [passwordsPerPage] = useState(40);
   const [dictionaryMode, setDictionaryMode] = useState(false);
+
+  const performSearch = useCallback(
+    async (wordList) => {
+      let query = "";
+      if (dictionaryMode) {
+        query = inputString;
+      } else {
+        for (const letter of inputLetters) {
+          query += letter === "" ? "?" : letter;
+        }
+      }
+
+      console.log("Input String:", query);
+      console.log("Banned Chars:", bannedChars);
+      console.log("Must Contain:", mustContain);
+      console.log("Dictionary Mode:", dictionaryMode);
+
+      const passwords = findPossiblePasswords(
+        query,
+        bannedChars,
+        mustContain,
+        wordList,
+        dictionaryMode
+      );
+
+      console.log("Possible Passwords:", passwords);
+
+      setPossiblePasswords(passwords);
+      setCurrentPage(1);
+    },
+    [dictionaryMode, inputString, inputLetters, bannedChars, mustContain]
+  );
 
   useEffect(() => {
     setIsLoading(true);
@@ -43,6 +77,12 @@ function PasswordForm() {
   }, [language]);
 
   useEffect(() => {
+    if (words && words.length > 0) {
+      performSearch(words);
+    }
+  }, [performSearch, words]);
+
+  useEffect(() => {
     if (dictionaryMode) {
       setBannedChars("");
       setMustContain("");
@@ -51,11 +91,6 @@ function PasswordForm() {
       setInputLetters(Array.from({ length: PASSWORD_LENGTH }, () => ""));
     }
   }, [dictionaryMode]);
-
-  useEffect(() => {
-    setPossiblePasswords([]);
-    setCurrentPage(1);
-  }, [language]);
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
@@ -87,38 +122,8 @@ function PasswordForm() {
     }
   };
 
-  const handleSubmit = async (event) => {
-    console.clear();
-    event.preventDefault();
-    let query = "";
-    if (dictionaryMode) {
-      query = inputString;
-    } else {
-      for (const letter of inputLetters) {
-        query += letter === "" ? "?" : letter;
-      }
-    }
-    console.log("Input String:", query);
-    console.log("Banned Chars:", bannedChars);
-    console.log("Must Contain:", mustContain);
-    console.log("Dictionary Mode:", dictionaryMode);
-    setIsLoading(true);
-    const passwords = findPossiblePasswords(
-      query,
-      bannedChars,
-      mustContain,
-      words,
-      dictionaryMode
-    );
-    console.log("Possible Passwords:", passwords);
-    setPossiblePasswords(passwords);
-    setIsLoading(false);
-    setCurrentPage(1);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth"
-    });
+  const handleScrollBottom = () => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
   const indexOfLastPassword = currentPage * passwordsPerPage;
@@ -133,7 +138,7 @@ function PasswordForm() {
       return (
         <>
           <label>
-            <p className="label-text">{translations[language].enterPassword}</p>
+            <p className="label-text">{text.enterPassword}</p>
           </label>
           <br />
           {[...Array(PASSWORD_LENGTH)].map((_, index) => (
@@ -159,7 +164,7 @@ function PasswordForm() {
     } else {
       return (
         <label>
-          <p className="label-text">{translations[language].enterPassword}</p>
+          <p className="label-text">{text.enterPassword}</p>
           <input
             type="text"
             value={inputString}
@@ -193,7 +198,7 @@ function PasswordForm() {
         {renderInputFields()}
         <br />
         <label>
-          <p className="label-text">{translations[language].bannedChars}</p>
+          <p className="label-text">{text.bannedChars}</p>
           <input
             type="text"
             value={bannedChars}
@@ -205,7 +210,7 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          <p className="label-text">{translations[language].mustContain}</p>
+          <p className="label-text">{text.mustContain}</p>
           <input
             type="text"
             value={mustContain}
@@ -218,7 +223,7 @@ function PasswordForm() {
         <br />
         <label>
           <p className="label-text">
-            {translations[language].dictionaryMode}
+            {text.dictionaryMode}
             <input
               type="checkbox"
               checked={dictionaryMode}
@@ -228,7 +233,7 @@ function PasswordForm() {
         </label>
         <br />
         <label>
-          <p className="label-text">{translations[language].languageToggle}</p>
+          <p className="label-text">{text.languageToggle}</p>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <label
               style={{ display: "flex", alignItems: "center", gap: "5px" }}
@@ -257,23 +262,18 @@ function PasswordForm() {
           </div>
         </label>
       </div>
-      <button type="button" onClick={handleSubmit} disabled={isLoading}>
-        {translations[language].search}
-      </button>
-      <br />
+      <div className="mobileButton">
+        <button onClick={handleScrollBottom}>
+          {text.homePage.scrollBottom}
+        </button>
+      </div>
       {isLoading ? (
-        <div className="loading-animation">
-          {translations[language].loading}
-        </div>
+        <div className="loading-animation">{text.loading}</div>
       ) : (
         <>
           {currentPasswords.length > 0 ? (
             <div>
-              <h3>
-                {translations[language].foundPasswords(
-                  possiblePasswords.length
-                )}
-              </h3>
+              <h3>{text.foundPasswords(possiblePasswords.length)}</h3>
               <ul>
                 {currentPasswords.map((password, index) => (
                   <li key={index} className="password">
@@ -403,7 +403,7 @@ function PasswordForm() {
                 </button>
                 <br />
                 <p>
-                  {translations[language].page(
+                  {text.page(
                     currentPage,
                     Math.ceil(possiblePasswords.length / passwordsPerPage)
                   )}
@@ -411,7 +411,7 @@ function PasswordForm() {
               </div>
             </div>
           ) : (
-            <h3>{translations[language].noPasswords}</h3>
+            <h3>{text.noPasswords}</h3>
           )}
         </>
       )}
