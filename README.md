@@ -63,8 +63,8 @@ To deploy the project to GitHub Pages, follow these steps:
 
 - `src/`: Contains the source code for the application.
 - `public/`: Static files and assets.
-- `dictionary.txt`: English dictionary file.
-- `slownik.txt`: Polish dictionary file.
+- `dictionary.txt`: English dictionary file (sourced from [here](https://github.com/dwyl/english-words/blob/master/words_alpha.txt)).
+- `slownik.txt`: Polish dictionary file (sourced from [here](https://sjp.pl/sl/odmiany/)).
 
 ## License
 

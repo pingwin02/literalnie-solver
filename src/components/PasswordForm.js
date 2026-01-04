@@ -34,6 +34,7 @@ function PasswordForm() {
         }
       }
 
+      console.clear();
       console.log("Input String:", query);
       console.log("Banned Chars:", bannedChars);
       console.log("Must Contain:", mustContain);
