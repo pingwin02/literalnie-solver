@@ -1,7 +1,7 @@
 export const findPossiblePasswords = (
   inputString,
   bannedChars,
-  mustContain,
+  yellowLetters,
   words,
   dictionaryMode
 ) => {
@@ -10,6 +10,7 @@ export const findPossiblePasswords = (
   for (const word of words) {
     if (word.length === inputString.length || dictionaryMode) {
       let matches = true;
+
       for (let i = 0; i < inputString.length && matches; i++) {
         if (
           (inputString[i] !== "?" && inputString[i] !== word[i]) ||
@@ -20,20 +21,26 @@ export const findPossiblePasswords = (
           matches = false;
         }
       }
-      if (
-        matches &&
-        (mustContain === "" ||
-          dictionaryMode ||
-          mustContain.split("").every((char) => {
-            const regex = new RegExp(char, "g");
-            const matches = (word.match(regex) || []).length;
-            const mustContainMatches = (mustContain.match(regex) || []).length;
-            if (inputString.includes(char)) {
-              return matches > mustContainMatches;
+
+      if (matches && !dictionaryMode && yellowLetters) {
+        for (let i = 0; i < yellowLetters.length && matches; i++) {
+          const yellowsAtPosition = yellowLetters[i];
+          if (yellowsAtPosition !== "") {
+            for (const yellowLetter of yellowsAtPosition) {
+              if (word[i] === yellowLetter) {
+                matches = false;
+                break;
+              }
+              if (!word.includes(yellowLetter)) {
+                matches = false;
+                break;
+              }
             }
-            return matches >= mustContainMatches;
-          }))
-      ) {
+          }
+        }
+      }
+
+      if (matches) {
         possiblePasswords.push(word);
       }
     }

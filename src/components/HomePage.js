@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import PasswordForm from "./PasswordForm";
 import { LanguageContext } from "../App";
 import translations from "../translations";
@@ -6,6 +6,7 @@ import translations from "../translations";
 const HomePage = () => {
   const { language } = useContext(LanguageContext);
   const [expanded, setExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 550);
 
   const toggleInstructions = () => {
     setExpanded(!expanded);
@@ -15,7 +16,17 @@ const HomePage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 550);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const text = translations[language].homePage;
+  const instructions =
+    isMobile && text.instructionsMobile
+      ? text.instructionsMobile
+      : text.instructions;
 
   return (
     <div className="home-page">
@@ -36,7 +47,7 @@ const HomePage = () => {
         </button>
         {expanded && (
           <ol>
-            {text.instructions.map((instruction, index) => (
+            {instructions.map((instruction, index) => (
               <li key={index}>{instruction}</li>
             ))}
           </ol>
@@ -44,6 +55,10 @@ const HomePage = () => {
       </div>
 
       <PasswordForm />
+
+      <div className="mobileButton">
+        <button onClick={handleScrollTop}>{text.scrollTop}</button>
+      </div>
 
       <div className="home-page__footer">
         <p>
@@ -57,9 +72,6 @@ const HomePage = () => {
           <br />
           &copy; 2026
         </p>
-        <div className="mobileButton">
-          <button onClick={handleScrollTop}>{text.scrollTop}</button>
-        </div>
       </div>
     </div>
   );

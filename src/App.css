@@ -37,6 +37,10 @@ ol {
   margin: 0px;
 }
 
+.home-page__content ol {
+  padding: 0;
+}
+
 .password {
   float: left;
   margin-top: 2px;
@@ -65,9 +69,36 @@ button:disabled {
 .form-inputs {
   margin: 20px;
 }
+
+.home-page__footer {
+  margin-top: 8px;
+}
+
+.home-page__footer p {
+  margin: 4px 0;
+  display: block;
+}
+
+.dictionary-input-wrapper {
+  display: block;
+  margin-bottom: 10px;
+}
 .label-text {
   margin: 10px;
   display: block;
+}
+
+.dictionary-toggle-label {
+  display: block;
+  margin: 4px 0;
+}
+
+.dictionary-toggle-label .label-text {
+  margin: 4px 0;
+}
+
+.dictionary-toggle-label input[type="checkbox"] {
+  margin: 6px;
 }
 .password-input {
   max-width: 15px;
@@ -142,5 +173,90 @@ input[type="checkbox"] {
 
   .mobileButton {
     display: block;
+  }
+
+  .mobileButton--dictionary {
+    margin-top: 12px;
+  }
+}
+
+/* Wordle Grid Styles */
+.wordle-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 20px auto;
+  max-width: 330px;
+}
+
+.wordle-row {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+
+.wordle-cell {
+  width: 38px;
+  height: 38px;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  border: 2px solid #3a3a3c;
+  border-radius: 4px;
+  background-color: #787c7e;
+  color: #ffffff;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+  padding: 0;
+  margin: 0;
+  line-height: 34px;
+}
+
+input.wordle-cell {
+  font-size: 1.5em;
+}
+
+.wordle-hint {
+  font-size: 1.5em;
+}
+
+.wordle-cell:focus {
+  outline: none;
+  border-color: #565758;
+}
+
+.wordle-cell:disabled {
+  opacity: 0.6;
+}
+
+.dictionary-mode-notice {
+  padding: 20px;
+  color: #999;
+  font-style: italic;
+}
+
+@media only screen and (max-width: 550px) {
+  .wordle-grid {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+
+  .wordle-cell {
+    width: 34px;
+    height: 34px;
+    font-size: 1em;
+    line-height: 30px;
+  }
+
+  input.wordle-cell {
+    font-size: 1em;
+  }
+
+  .wordle-hint {
+    font-size: 1em;
+    line-height: 30px;
   }
 }
