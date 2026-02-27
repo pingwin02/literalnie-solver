@@ -7,6 +7,40 @@ export const findPossiblePasswords = (
 ) => {
   const possiblePasswords = [];
 
+  const minLetterCounts = {};
+  const maxLetterCounts = {};
+  const hardBannedLetters = new Set();
+
+  if (!dictionaryMode) {
+    for (let i = 0; i < inputString.length; i++) {
+      const letter = inputString[i];
+      if (letter !== "?") {
+        minLetterCounts[letter] = (minLetterCounts[letter] || 0) + 1;
+      }
+    }
+
+    if (yellowLetters) {
+      for (let i = 0; i < yellowLetters.length; i++) {
+        const yellowsAtPosition = yellowLetters[i];
+        if (!yellowsAtPosition) continue;
+
+        for (const yellowLetter of yellowsAtPosition) {
+          minLetterCounts[yellowLetter] =
+            (minLetterCounts[yellowLetter] || 0) + 1;
+        }
+      }
+    }
+
+    for (const bannedLetter of bannedChars) {
+      if ((minLetterCounts[bannedLetter] || 0) > 0) {
+        maxLetterCounts[bannedLetter] = minLetterCounts[bannedLetter];
+      } else {
+        maxLetterCounts[bannedLetter] = 0;
+        hardBannedLetters.add(bannedLetter);
+      }
+    }
+  }
+
   for (const word of words) {
     if (word.length === inputString.length || dictionaryMode) {
       let matches = true;
@@ -16,7 +50,7 @@ export const findPossiblePasswords = (
           (inputString[i] !== "?" && inputString[i] !== word[i]) ||
           (!dictionaryMode &&
             inputString[i] === "?" &&
-            bannedChars.includes(word[i]))
+            hardBannedLetters.has(word[i]))
         ) {
           matches = false;
         }
@@ -35,6 +69,29 @@ export const findPossiblePasswords = (
                 matches = false;
                 break;
               }
+            }
+          }
+        }
+      }
+
+      if (matches && !dictionaryMode) {
+        const letterCounts = {};
+        for (const letter of word) {
+          letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+        }
+
+        for (const [letter, minCount] of Object.entries(minLetterCounts)) {
+          if ((letterCounts[letter] || 0) < minCount) {
+            matches = false;
+            break;
+          }
+        }
+
+        if (matches) {
+          for (const [letter, maxCount] of Object.entries(maxLetterCounts)) {
+            if ((letterCounts[letter] || 0) > maxCount) {
+              matches = false;
+              break;
             }
           }
         }

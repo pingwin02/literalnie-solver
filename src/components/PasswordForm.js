@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { LanguageContext } from "../App";
 import translations from "../translations";
 import { findPossiblePasswords } from "../utils/findPossiblePasswords";
@@ -27,6 +27,8 @@ function PasswordForm() {
   const [currentPage, setCurrentPage] = useState(1);
   const [passwordsPerPage] = useState(40);
   const [dictionaryMode, setDictionaryMode] = useState(false);
+  const [isGridSelected, setIsGridSelected] = useState(false);
+  const dictionaryInputRef = useRef(null);
 
   const performSearch = useCallback(
     async (wordList) => {
@@ -180,7 +182,88 @@ function PasswordForm() {
     return false;
   };
 
+  useEffect(() => {
+    const isRowCompleteLocal = (rowIndex) => {
+      return grid[rowIndex].every((cell) => cell.letter !== "");
+    };
+
+    const isRowAllGreenLocal = (rowIndex) => {
+      return grid[rowIndex].every(
+        (cell) => cell.color === "green" && cell.letter !== ""
+      );
+    };
+
+    const getFirstEmptyEditableCellLocal = () => {
+      for (let row = 0; row < MAX_ROWS; row++) {
+        const canEdit =
+          row === 0 ||
+          (!isRowAllGreenLocal(row - 1) && isRowCompleteLocal(row - 1));
+
+        if (!canEdit) continue;
+
+        for (let col = 0; col < PASSWORD_LENGTH; col++) {
+          if (!grid[row][col].letter) {
+            return { row, col };
+          }
+        }
+      }
+
+      return null;
+    };
+
+    const handleGlobalClick = (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      if (!target.closest(".wordle-cell")) {
+        setIsGridSelected(false);
+      }
+
+      if (dictionaryMode) {
+        if (target === dictionaryInputRef.current) return;
+        if (
+          target.closest(
+            "input, button, select, textarea, a, [contenteditable='true']"
+          )
+        ) {
+          return;
+        }
+
+        setTimeout(() => {
+          dictionaryInputRef.current?.focus();
+        }, 0);
+        return;
+      }
+
+      if (target.closest(".wordle-cell")) return;
+      if (
+        target.closest(
+          "button, select, textarea, a, input[type='checkbox'], [contenteditable='true']"
+        )
+      ) {
+        return;
+      }
+
+      const firstEmptyCell = getFirstEmptyEditableCellLocal();
+      if (firstEmptyCell) {
+        setTimeout(() => {
+          document
+            .getElementById(`cell-${firstEmptyCell.row}-${firstEmptyCell.col}`)
+            ?.focus();
+        }, 0);
+      }
+    };
+
+    document.addEventListener("click", handleGlobalClick);
+
+    return () => {
+      document.removeEventListener("click", handleGlobalClick);
+    };
+  }, [dictionaryMode, grid]);
+
   const handleCellClick = (row, col) => {
+    setIsGridSelected(false);
+
     if (!canEditRow(row)) return;
 
     if (grid[row][col].letter) {
@@ -238,6 +321,8 @@ function PasswordForm() {
   const handleCellInput = (event, row, col) => {
     if (dictionaryMode || !canEditRow(row)) return;
 
+    setIsGridSelected(false);
+
     const value = event.target.value.slice(-1).toLowerCase();
 
     setGrid((prevGrid) => {
@@ -268,6 +353,55 @@ function PasswordForm() {
   };
 
   const handleCellKeyDown = (event, row, col) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
+      event.preventDefault();
+      setIsGridSelected(true);
+      return;
+    }
+
+    if (
+      isGridSelected &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey &&
+      !event.shiftKey
+    ) {
+      event.preventDefault();
+
+      if (event.key.length === 1) {
+        const typedValue = event.key.toLowerCase();
+        setGrid((prevGrid) => {
+          const newGrid = prevGrid.map((r) => r.map((c) => ({ ...c })));
+          for (let r = 0; r < MAX_ROWS; r++) {
+            for (let c = 0; c < PASSWORD_LENGTH; c++) {
+              newGrid[r][c].letter = "";
+              newGrid[r][c].color = "gray";
+            }
+          }
+          newGrid[0][0].letter = typedValue;
+          return newGrid;
+        });
+        setCurrentRow(0);
+        setIsGridSelected(false);
+        setTimeout(() => {
+          document.getElementById("cell-0-1")?.focus();
+        }, 0);
+        return;
+      }
+
+      setGrid(createEmptyGrid());
+      setCurrentRow(0);
+      setIsGridSelected(false);
+      setTimeout(() => {
+        document.getElementById("cell-0-0")?.focus();
+      }, 0);
+      return;
+    }
+
+    if (isGridSelected) {
+      setIsGridSelected(false);
+    }
+
     if (event.key === "Tab" || event.key === " ") {
       const hint = getGreenLetterHint(col);
       if (hint && !grid[row][col].letter) {
@@ -333,6 +467,7 @@ function PasswordForm() {
     indexOfFirstPassword,
     indexOfLastPassword
   );
+  const totalPages = Math.ceil(possiblePasswords.length / passwordsPerPage);
 
   const renderInputFields = () => {
     if (dictionaryMode) {
@@ -341,6 +476,7 @@ function PasswordForm() {
           <p className="label-text">{text.enterPassword}</p>
           <input
             type="text"
+            ref={dictionaryInputRef}
             value={inputString}
             onChange={(event) =>
               setInputString(event.target.value.toLowerCase())
@@ -414,9 +550,11 @@ function PasswordForm() {
                       color: cell.letter ? "#ffffff" : "#ffffff",
                       border: isConflict
                         ? "3px solid #d32f2f"
-                        : canEdit
-                          ? "2px solid #565758"
-                          : "2px solid #3a3a3c",
+                        : isGridSelected
+                          ? "3px solid #ffffff"
+                          : canEdit
+                            ? "2px solid #565758"
+                            : "2px solid #3a3a3c",
                       cursor: canEdit ? "pointer" : "not-allowed"
                     }}
                   />
@@ -430,10 +568,7 @@ function PasswordForm() {
   };
 
   const changePage = (pageNumber) => {
-    if (
-      pageNumber > 0 &&
-      pageNumber <= Math.ceil(possiblePasswords.length / passwordsPerPage)
-    ) {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
       setTimeout(() => {
         window.scrollTo({
@@ -543,134 +678,113 @@ function PasswordForm() {
                   </li>
                 ))}
               </ul>
-              <div className="pagination">
-                <input
-                  type="number"
-                  min="1"
-                  max={Math.ceil(possiblePasswords.length / passwordsPerPage)}
-                  value={currentPage}
-                  onChange={(event) => {
-                    const value = parseInt(event.target.value);
-                    if (
-                      value >= 1 &&
-                      value <=
-                        Math.ceil(possiblePasswords.length / passwordsPerPage)
-                    ) {
-                      changePage(value);
-                    } else if (
-                      value >
-                      Math.ceil(possiblePasswords.length / passwordsPerPage)
-                    ) {
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <input
+                    type="number"
+                    min="1"
+                    max={totalPages}
+                    value={currentPage}
+                    onChange={(event) => {
+                      const value = parseInt(event.target.value);
+                      if (value >= 1 && value <= totalPages) {
+                        changePage(value);
+                      } else if (value > totalPages) {
+                        changePage(totalPages);
+                      } else {
+                        changePage(1);
+                      }
+                    }}
+                  />
+                  <br />
+                  <button
+                    onClick={() => changePage(1)}
+                    disabled={currentPage === 1}
+                  >
+                    |&lt;
+                  </button>
+                  <button
+                    onClick={() => changePage(currentPage - 10)}
+                    disabled={currentPage <= 10}
+                  >
+                    &lt;&lt;
+                  </button>
+                  <button
+                    onClick={() => changePage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    &lt;
+                  </button>
+                  <button
+                    onClick={() => changePage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    &gt;
+                  </button>
+                  <button
+                    onClick={() => changePage(currentPage + 10)}
+                    disabled={currentPage >= totalPages - 10}
+                  >
+                    &gt;&gt;
+                  </button>
+                  <button
+                    onClick={() => changePage(totalPages)}
+                    disabled={currentPage === totalPages}
+                  >
+                    &gt;|
+                  </button>
+                  <br />
+                  <button
+                    onClick={() =>
                       changePage(
-                        Math.ceil(possiblePasswords.length / passwordsPerPage)
-                      );
-                    } else {
-                      changePage(1);
+                        Math.ceil(
+                          possiblePasswords.length / passwordsPerPage / 4
+                        )
+                      )
                     }
-                  }}
-                />
-                <br />
-                <button
-                  onClick={() => changePage(1)}
-                  disabled={currentPage === 1}
-                >
-                  |&lt;
-                </button>
-                <button
-                  onClick={() => changePage(currentPage - 10)}
-                  disabled={currentPage <= 10}
-                >
-                  &lt;&lt;
-                </button>
-                <button
-                  onClick={() => changePage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  &lt;
-                </button>
-                <button
-                  onClick={() => changePage(currentPage + 1)}
-                  disabled={
-                    currentPage ===
-                    Math.ceil(possiblePasswords.length / passwordsPerPage)
-                  }
-                >
-                  &gt;
-                </button>
-                <button
-                  onClick={() => changePage(currentPage + 10)}
-                  disabled={
-                    currentPage >=
-                    Math.ceil(possiblePasswords.length / passwordsPerPage) - 10
-                  }
-                >
-                  &gt;&gt;
-                </button>
-                <button
-                  onClick={() =>
-                    changePage(
-                      Math.ceil(possiblePasswords.length / passwordsPerPage)
-                    )
-                  }
-                  disabled={
-                    currentPage ===
-                    Math.ceil(possiblePasswords.length / passwordsPerPage)
-                  }
-                >
-                  &gt;|
-                </button>
-                <br />
-                <button
-                  onClick={() =>
-                    changePage(
+                    disabled={
+                      currentPage ===
                       Math.ceil(possiblePasswords.length / passwordsPerPage / 4)
-                    )
-                  }
-                  disabled={
-                    currentPage ===
-                    Math.ceil(possiblePasswords.length / passwordsPerPage / 4)
-                  }
-                >
-                  &#188;
-                </button>
-                <button
-                  onClick={() =>
-                    changePage(
+                    }
+                  >
+                    &#188;
+                  </button>
+                  <button
+                    onClick={() =>
+                      changePage(
+                        Math.ceil(
+                          possiblePasswords.length / passwordsPerPage / 2
+                        )
+                      )
+                    }
+                    disabled={
+                      currentPage ===
                       Math.ceil(possiblePasswords.length / passwordsPerPage / 2)
-                    )
-                  }
-                  disabled={
-                    currentPage ===
-                    Math.ceil(possiblePasswords.length / passwordsPerPage / 2)
-                  }
-                >
-                  &#189;
-                </button>
-                <button
-                  onClick={() =>
-                    changePage(
+                    }
+                  >
+                    &#189;
+                  </button>
+                  <button
+                    onClick={() =>
+                      changePage(
+                        Math.ceil(
+                          (3 * possiblePasswords.length) / passwordsPerPage / 4
+                        )
+                      )
+                    }
+                    disabled={
+                      currentPage ===
                       Math.ceil(
                         (3 * possiblePasswords.length) / passwordsPerPage / 4
                       )
-                    )
-                  }
-                  disabled={
-                    currentPage ===
-                    Math.ceil(
-                      (3 * possiblePasswords.length) / passwordsPerPage / 4
-                    )
-                  }
-                >
-                  &#190;
-                </button>
-                <br />
-                <p>
-                  {text.page(
-                    currentPage,
-                    Math.ceil(possiblePasswords.length / passwordsPerPage)
-                  )}
-                </p>
-              </div>
+                    }
+                  >
+                    &#190;
+                  </button>
+                  <br />
+                  <p>{text.page(currentPage, totalPages)}</p>
+                </div>
+              )}
             </div>
           ) : (
             <h3>{text.noPasswords}</h3>
