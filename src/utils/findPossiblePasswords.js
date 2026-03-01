@@ -20,14 +20,26 @@ export const findPossiblePasswords = (
     }
 
     if (yellowLetters) {
+      const yellowMinCounts = {};
+
       for (let i = 0; i < yellowLetters.length; i++) {
         const yellowsAtPosition = yellowLetters[i];
         if (!yellowsAtPosition) continue;
 
-        for (const yellowLetter of yellowsAtPosition) {
-          minLetterCounts[yellowLetter] =
-            (minLetterCounts[yellowLetter] || 0) + 1;
+        const uniqueYellowsAtPosition = new Set(yellowsAtPosition);
+        for (const yellowLetter of uniqueYellowsAtPosition) {
+          yellowMinCounts[yellowLetter] =
+            (yellowMinCounts[yellowLetter] || 0) + 1;
         }
+      }
+
+      for (const [yellowLetter, yellowCount] of Object.entries(
+        yellowMinCounts
+      )) {
+        minLetterCounts[yellowLetter] = Math.max(
+          minLetterCounts[yellowLetter] || 0,
+          yellowCount
+        );
       }
     }
 

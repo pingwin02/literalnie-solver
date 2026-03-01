@@ -1,12 +1,12 @@
 {
   "name": "literalnie-solver",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "homepage": "https://pingwin02.github.io/literalnie-solver/",
   "private": true,
   "dependencies": {
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-router-dom": "7.13.0",
+    "react-router-dom": "7.13.1",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -15,7 +15,7 @@
     "lint": "prettier --write .",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false --runInBand",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
