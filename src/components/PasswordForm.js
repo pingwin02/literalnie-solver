@@ -36,50 +36,29 @@ function PasswordForm() {
 
       if (dictionaryMode) {
         console.log("Dictionary Mode - Input String:", inputString);
-        const passwords = wordList.filter((word) =>
-          word.toLowerCase().startsWith(inputString.toLowerCase())
-        );
+        const passwords = findPossiblePasswords({
+          guesses: [],
+          words: wordList,
+          dictionaryMode,
+          inputString
+        });
         console.log("Possible Passwords:", passwords);
         setPossiblePasswords(passwords);
         setCurrentPage(1);
         return;
       }
 
-      let queryString = Array(PASSWORD_LENGTH).fill("?");
-      let bannedChars = "";
-      let yellowLetters = Array(PASSWORD_LENGTH).fill("");
+      const guesses = grid
+        .slice(0, Math.min(currentRow + 1, MAX_ROWS))
+        .filter((row) => row.some((cell) => cell.letter));
 
-      for (let row = 0; row <= currentRow && row < MAX_ROWS; row++) {
-        for (let col = 0; col < PASSWORD_LENGTH; col++) {
-          const cell = grid[row][col];
+      console.log("Guesses:", guesses);
 
-          if (cell.color === "green" && cell.letter) {
-            queryString[col] = cell.letter;
-          } else if (cell.color === "yellow" && cell.letter) {
-            if (!yellowLetters[col].includes(cell.letter)) {
-              yellowLetters[col] += cell.letter;
-            }
-          } else if (cell.color === "gray" && cell.letter) {
-            if (!bannedChars.includes(cell.letter)) {
-              bannedChars += cell.letter;
-            }
-          }
-        }
-      }
-
-      queryString = queryString.join("");
-
-      console.log("Input String:", queryString);
-      console.log("Banned Chars:", bannedChars);
-      console.log("Yellow Letters:", yellowLetters);
-
-      const passwords = findPossiblePasswords(
-        queryString,
-        bannedChars,
-        yellowLetters,
-        wordList,
+      const passwords = findPossiblePasswords({
+        guesses,
+        words: wordList,
         dictionaryMode
-      );
+      });
 
       console.log("Possible Passwords:", passwords);
 

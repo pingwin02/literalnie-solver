@@ -1,16 +1,24 @@
 import { findPossiblePasswords } from "./findPossiblePasswords";
 
 describe("findPossiblePasswords - English", () => {
+  const createGuess = (letters, colors) =>
+    letters.split("").map((letter, index) => ({
+      letter,
+      color: colors[index]
+    }));
+
   test("filters by fixed-position letters", () => {
     const words = ["cabin", "caper", "saber", "candy"];
 
-    const result = findPossiblePasswords(
-      "ca???",
-      "",
-      ["", "", "", "", ""],
+    const guesses = [
+      createGuess("caaaa", ["green", "green", "gray", "gray", "gray"])
+    ];
+
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
     expect(result).toEqual(["cabin", "caper", "candy"]);
   });
@@ -18,150 +26,133 @@ describe("findPossiblePasswords - English", () => {
   test("handles dictionary mode rules", () => {
     const words = ["cat", "cater", "catering", "dog"];
 
-    const normalModeResult = findPossiblePasswords(
-      "ca???",
-      "",
-      ["", "", "", "", ""],
+    const normalModeResult = findPossiblePasswords({
+      guesses: [],
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
-    const dictionaryModeResult = findPossiblePasswords(
-      "ca???",
-      "xyz",
-      ["a", "b", "c", "d", "e"],
+    const dictionaryModeResult = findPossiblePasswords({
+      guesses: [],
       words,
-      true
-    );
+      dictionaryMode: true,
+      inputString: "cat"
+    });
 
     expect(normalModeResult).toEqual(["cater"]);
     expect(dictionaryModeResult).toEqual(["cat", "cater", "catering"]);
   });
 
-  test("applies banned-letter constraints", () => {
-    const words = ["cider", "caper", "sauce", "brace"];
-
-    const result = findPossiblePasswords(
-      "?????",
-      "ce",
-      ["", "", "", "", ""],
-      words,
-      false
-    );
-
-    expect(result).toEqual([]);
-  });
-
   test("applies yellow-letter constraints", () => {
-    const words = ["alert", "later", "stare", "taper"];
+    const words = ["alert", "later", "stare", "taper", "aback"];
+    const guesses = [
+      createGuess("lzzzz", ["yellow", "gray", "gray", "gray", "gray"])
+    ];
 
-    const result = findPossiblePasswords(
-      "?????",
-      "",
-      ["l", "", "", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
     expect(result).toEqual(["alert"]);
   });
 
-  test("supports repeated-letter minimum count", () => {
-    const words = ["banal", "canal", "karma", "caper"];
+  test("supports repeated-letter minimum from one row", () => {
+    const words = ["banal", "canal", "karma", "caper", "alarm"];
+    const guesses = [
+      createGuess("axxxa", ["yellow", "gray", "gray", "gray", "yellow"])
+    ];
 
-    const result = findPossiblePasswords(
-      "?????",
-      "",
-      ["a", "", "a", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
-    expect(result).toEqual(["banal", "canal", "karma"]);
+    expect(result).toEqual(["banal", "canal"]);
   });
 
-  test("applies maximum count for constrained letters", () => {
-    const words = ["taker", "cabin", "karma", "banal"];
+  test("applies maximum count when repeated guess has gray", () => {
+    const words = ["entry", "eager", "level", "creed"];
+    const guesses = [
+      createGuess("eezzz", ["green", "gray", "gray", "gray", "gray"])
+    ];
 
-    const result = findPossiblePasswords(
-      "?a???",
-      "a",
-      ["", "", "", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
-    expect(result).toEqual(["taker", "cabin"]);
+    expect(result).toEqual(["entry"]);
   });
 
-  test("handles mixed constraints from multiple guesses", () => {
-    const words = ["bluet", "gluer", "fluer", "value", "queue"];
+  test("does not overcount yellow letter across different rows", () => {
+    const words = ["xerox", "crept", "vexed", "eerie"];
+    const guesses = [
+      createGuess("adieu", ["gray", "gray", "gray", "yellow", "gray"]),
+      createGuess("eagle", ["yellow", "gray", "gray", "gray", "gray"])
+    ];
 
-    const result = findPossiblePasswords(
-      "??ue?",
-      "adios",
-      ["", "", "l", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
-    expect(result).toEqual(["bluet", "gluer", "fluer"]);
-  });
-
-  test("returns a single valid candidate when constraints are strict", () => {
-    const words = ["fluke", "glide", "abuse", "floss", "indue"];
-
-    const result = findPossiblePasswords(
-      "??u?e",
-      "adios",
-      ["l", "", "", "e", "u"],
-      words,
-      false
-    );
-
-    expect(result).toEqual(["fluke"]);
+    expect(result).toEqual(["xerox", "crept"]);
   });
 });
 
 describe("findPossiblePasswords - Polish", () => {
+  const createGuess = (letters, colors) =>
+    letters.split("").map((letter, index) => ({
+      letter,
+      color: colors[index]
+    }));
+
   test("supports locale-specific characters", () => {
     const words = ["łośek", "łóżek", "łozek", "łukek"];
+    const guesses = [
+      createGuess("łżzzz", ["green", "yellow", "gray", "gray", "gray"])
+    ];
 
-    const result = findPossiblePasswords(
-      "ł?ż??",
-      "",
-      ["", "", "", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
     expect(result).toEqual(["łóżek"]);
   });
 
-  test("handles repeated yellow-letter constraints", () => {
-    const words = ["banan", "kajak", "alarm", "tatar", "czapa"];
+  test("handles repeated yellow-letter constraints in one row", () => {
+    const words = ["banan", "kajak", "alarm", "tatar", "czapa", "karta"];
+    const guesses = [
+      createGuess("axaxx", ["yellow", "gray", "yellow", "gray", "gray"])
+    ];
 
-    const result = findPossiblePasswords(
-      "?????",
-      "",
-      ["a", "", "a", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
-    expect(result).toEqual(["banan", "kajak", "tatar"]);
+    expect(result).toEqual(["banan", "kajak", "tatar", "karta"]);
   });
 
-  test("applies upper bounds for constrained letters", () => {
-    const words = ["tanie", "kakao", "banan", "salto"];
+  test("applies upper bounds from gray+yellow mix", () => {
+    const words = ["tanie", "kakao", "banan", "salto", "alarm"];
+    const guesses = [
+      createGuess("aaxxx", ["yellow", "gray", "gray", "gray", "gray"])
+    ];
 
-    const result = findPossiblePasswords(
-      "?a???",
-      "a",
-      ["", "", "", "", ""],
+    const result = findPossiblePasswords({
+      guesses,
       words,
-      false
-    );
+      dictionaryMode: false
+    });
 
     expect(result).toEqual(["tanie", "salto"]);
   });
