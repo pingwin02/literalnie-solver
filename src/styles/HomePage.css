@@ -1,0 +1,26 @@
+.home-page__content ol {
+  padding: 0;
+}
+
+.home-page__footer {
+  margin-top: 8px;
+}
+
+.home-page__footer p {
+  margin: 4px 0;
+  display: block;
+}
+
+.mobileButton {
+  display: none;
+}
+
+.mobileButton--dictionary {
+  margin-top: 12px;
+}
+
+@media only screen and (max-width: 550px) {
+  .mobileButton {
+    display: block;
+  }
+}

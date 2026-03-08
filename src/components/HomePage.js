@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import PasswordForm from "./PasswordForm";
 import { LanguageContext } from "../App";
 import translations from "../translations";
+import "../styles/HomePage.css";
 
 const HomePage = () => {
   const { language } = useContext(LanguageContext);
