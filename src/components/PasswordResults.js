@@ -39,11 +39,21 @@ function PasswordResults({
     <div>
       <h3>{text.foundPasswords(possiblePasswords.length)}</h3>
       <ul>
-        {currentPasswords.map((password, index) => (
-          <li key={index} className="password">
-            {password}
-          </li>
-        ))}
+        {currentPasswords.map((password, index) => {
+          const dictUrl = `https://www.diki.pl/slownik-angielskiego?q=${encodeURIComponent(password)}`;
+          return (
+            <li key={index} className="password">
+              <span
+                className="password-link"
+                onClick={() =>
+                  window.open(dictUrl, "_blank", "noopener,noreferrer")
+                }
+              >
+                {password}
+              </span>
+            </li>
+          );
+        })}
       </ul>
       {totalPages > 1 && (
         <div className="pagination">
