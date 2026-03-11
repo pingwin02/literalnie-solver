@@ -229,19 +229,20 @@ function PasswordForm() {
 
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
         if (!target.classList.contains("wordle-cell")) return;
-
-        const rowsToCopy = isGridSelectedRef.current
-          ? grid.filter((row) => row.some((cell) => cell.letter))
-          : [grid[currentRow]];
-
-        const text = rowsToCopy
-          .map((row) => row.map((cell) => cell.letter).join(""))
-          .filter(Boolean)
-          .join("\n");
-
-        if (text) {
+        const rowsToCopy = grid.filter((row) =>
+          row.some((cell) => cell.letter)
+        );
+        const jsonRows = rowsToCopy.map((row) =>
+          row.map((cell) => ({ l: cell.letter, c: cell.color }))
+        );
+        const jsonExport = {
+          grid: jsonRows,
+          language
+        };
+        const jsonText = JSON.stringify(jsonExport);
+        if (jsonText) {
           event.preventDefault();
-          navigator.clipboard.writeText(text);
+          navigator.clipboard.writeText(jsonText);
         }
       }
     };
@@ -251,7 +252,7 @@ function PasswordForm() {
     return () => {
       document.removeEventListener("keydown", handleGlobalKeyDown);
     };
-  }, [dictionaryMode, focusCell, grid, currentRow]);
+  }, [dictionaryMode, focusCell, grid, currentRow, language]);
 
   const handleCellClick = (row, col) => {
     setIsGridSelected(false);
@@ -374,76 +375,95 @@ function PasswordForm() {
     const wasGridSelected = isGridSelected;
 
     const pastedText = event.clipboardData.getData("text");
-    const rowsToPaste = pastedText
-      .split(/\r?\n+/)
-      .map((word) => normalizeLetters(word))
-      .filter(Boolean);
-    const flattenedLetters = normalizeLetters(pastedText);
-
-    if (rowsToPaste.length === 0 && !flattenedLetters) {
-      return;
+    let parsedObj = null;
+    let isValidJsonGrid = false;
+    let pastedLanguage = null;
+    try {
+      parsedObj = JSON.parse(pastedText);
+      if (
+        parsedObj &&
+        typeof parsedObj === "object" &&
+        Array.isArray(parsedObj.grid)
+      ) {
+        isValidJsonGrid = parsedObj.grid.every(
+          (row) =>
+            Array.isArray(row) &&
+            row.every(
+              (cell) => typeof cell === "object" && "l" in cell && "c" in cell
+            )
+        );
+        pastedLanguage = parsedObj.language;
+      } else {
+        isValidJsonGrid =
+          Array.isArray(parsedObj) &&
+          parsedObj.every(
+            (row) =>
+              Array.isArray(row) &&
+              row.every(
+                (cell) => typeof cell === "object" && "l" in cell && "c" in cell
+              )
+          );
+      }
+    } catch (e) {
+      parsedObj = null;
+      isValidJsonGrid = false;
     }
-
     event.preventDefault();
     setIsGridSelected(false);
-
     const startRow = wasGridSelected ? 0 : row;
-    const startCol = wasGridSelected ? 0 : col;
-
     let nextPosition = null;
     let nextRow = currentRow;
-
+    if (isValidJsonGrid && pastedLanguage) {
+      setLanguage(pastedLanguage);
+    }
     setGrid((prevGrid) => {
       const newGrid = wasGridSelected ? createEmptyGrid() : cloneGrid(prevGrid);
-
-      if (rowsToPaste.length > 1) {
+      let gridRows = null;
+      if (isValidJsonGrid) {
+        gridRows = parsedObj.grid || parsedObj;
         let targetRow = startRow;
-
-        for (const word of rowsToPaste) {
+        for (const rowArr of gridRows) {
           if (
             targetRow >= MAX_ROWS ||
             (!wasGridSelected && !canEditRowInGrid(newGrid, targetRow))
           ) {
             break;
           }
-
           for (let targetCol = 0; targetCol < PASSWORD_LENGTH; targetCol++) {
-            const letter = word[targetCol] ?? "";
-            newGrid[targetRow][targetCol].letter = letter;
-            newGrid[targetRow][targetCol].color = "gray";
+            const cell = rowArr[targetCol] || {};
+            newGrid[targetRow][targetCol].letter = cell.l || "";
+            newGrid[targetRow][targetCol].color = cell.c || "gray";
           }
-
           targetRow += 1;
         }
       } else {
-        let targetRow = startRow;
-        let targetCol = startCol;
-
-        for (const letter of flattenedLetters) {
-          if (
-            targetRow >= MAX_ROWS ||
-            (!wasGridSelected && !canEditRowInGrid(newGrid, targetRow))
-          ) {
-            break;
-          }
-
-          newGrid[targetRow][targetCol].letter = letter;
-          newGrid[targetRow][targetCol].color = "gray";
-
-          targetCol += 1;
-          if (targetCol >= PASSWORD_LENGTH) {
-            targetCol = 0;
+        const rowsToPaste = pastedText
+          .split(/\r?\n+/)
+          .map((word) => normalizeLetters(word))
+          .filter(Boolean);
+        if (rowsToPaste.length > 0) {
+          let targetRow = startRow;
+          for (const word of rowsToPaste) {
+            if (
+              targetRow >= MAX_ROWS ||
+              (!wasGridSelected && !canEditRowInGrid(newGrid, targetRow))
+            ) {
+              break;
+            }
+            for (let targetCol = 0; targetCol < PASSWORD_LENGTH; targetCol++) {
+              const letter = word[targetCol] ?? "";
+              newGrid[targetRow][targetCol].letter = letter;
+              newGrid[targetRow][targetCol].color = "gray";
+            }
             targetRow += 1;
           }
         }
       }
-
       const syncedGrid = syncColumnLetterGroups(newGrid);
       nextPosition = getNextEditablePosition(syncedGrid);
       nextRow = getNextCurrentRow(syncedGrid);
       return syncedGrid;
     });
-
     setTimeout(() => {
       setCurrentRow(nextRow);
       const targetPosition = nextPosition ?? { row: nextRow, col: 0 };

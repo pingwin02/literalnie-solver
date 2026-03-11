@@ -1,5 +1,21 @@
 import "../styles/PasswordResults.css";
 
+const getDikiUrl = (password) =>
+  `https://www.diki.pl/slownik-angielskiego?q=${encodeURIComponent(password)}`;
+
+function PasswordLink({ password }) {
+  return (
+    <span
+      className="password-link"
+      onClick={() =>
+        window.open(getDikiUrl(password), "_blank", "noopener,noreferrer")
+      }
+    >
+      {password}
+    </span>
+  );
+}
+
 function PasswordResults({
   dictionaryMode,
   isLoading,
@@ -24,9 +40,12 @@ function PasswordResults({
   }
 
   if (possiblePasswords.length === 1) {
+    const password = possiblePasswords[0];
     return (
       <div className="single-result">
-        <h3>{text.foundOnePassword(possiblePasswords[0])}</h3>
+        <h3>
+          {text.foundOnePasswordLabel} <PasswordLink password={password} />
+        </h3>
       </div>
     );
   }
@@ -39,21 +58,11 @@ function PasswordResults({
     <div>
       <h3>{text.foundPasswords(possiblePasswords.length)}</h3>
       <ul>
-        {currentPasswords.map((password, index) => {
-          const dictUrl = `https://www.diki.pl/slownik-angielskiego?q=${encodeURIComponent(password)}`;
-          return (
-            <li key={index} className="password">
-              <span
-                className="password-link"
-                onClick={() =>
-                  window.open(dictUrl, "_blank", "noopener,noreferrer")
-                }
-              >
-                {password}
-              </span>
-            </li>
-          );
-        })}
+        {currentPasswords.map((password, index) => (
+          <li key={index} className="password">
+            <PasswordLink password={password} />
+          </li>
+        ))}
       </ul>
       {totalPages > 1 && (
         <div className="pagination">
