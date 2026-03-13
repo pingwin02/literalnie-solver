@@ -1,23 +1,27 @@
 # Literalnie Solver
 
-Literalnie Solver is a web application designed to help users solve puzzles from the game [Literalnie](https://literalnie.fun/). The application provides a user-friendly interface to input puzzle constraints and find possible solutions based on a dictionary.
+Literalnie Solver is a web application designed to help users solve puzzles from the game [Literalnie](https://literalnie.fun/). The application provides a user-friendly, interactive grid interface to input your guesses and find possible solutions based on a comprehensive dictionary.
 
 ## Features
 
-- **Language Support**: Toggle between Polish and English for the interface and dictionary.
-- **Dictionary Mode**: Solve puzzles without specifying the exact length of the word.
-- **Custom Constraints**: Specify banned letters and required letters to refine your search.
-- **Responsive Design**: Works seamlessly on both desktop and mobile devices.
+- **Interactive Grid**: A Wordle-like grid where you can type your guesses and click on cells to cycle through colors (Gray, Yellow, Green) to match the game's feedback.
+- **Auto-Filtering**: The app automatically filters and displays possible words based on the current state of the grid.
+- **Copy & Paste Support**: Easily paste your game results (both text and JSON format) directly into the grid.
+- **Language Support**: Toggle between Polish and English for both the interface and the dictionary.
+- **Dictionary Mode**: A separate mode that allows you to manually search through the dictionary using text input.
+- **Keyboard Navigation**: Full support for navigating the grid using arrow keys, typing, and quick selection shortcuts.
+- **Responsive Design**: Works seamlessly and looks great on both desktop and mobile devices.
 
 ## How to Use
 
-1. **Enter the Puzzle**: Input the word you want to solve. Use `?` for unknown letters.
-2. **Set Constraints**:
-   - Enter letters to ban.
-   - Enter letters that must be included.
-3. **Choose Dictionary Mode**: Enable dictionary mode if the word length is unknown.
-4. **Search**: Click the "Search" button to find possible solutions.
-5. **Switch Language**: Use the language toggle to switch between Polish and English.
+1. **Enter Your Guesses**: Type the words you have already guessed in the game into the grid.
+2. **Set the Colors**: Click on individual letter cells to cycle their colors (Gray -> Yellow -> Green) so they match the feedback from the game.
+   - **Gray**: Letter is not in the word.
+   - **Yellow**: Letter is in the word but in the wrong spot.
+   - **Green**: Letter is in the correct spot.
+3. **View Results**: Scroll down to see the list of possible passwords that match your constraints. The list updates automatically.
+4. **Dictionary Mode**: Toggle "Dictionary Mode" to simply search the dictionary for specific sequences of letters instead of using the grid.
+5. **Switch Language**: Use the language toggle to switch between the Polish (`slownik.txt`) and English (`dictionary.txt`) database.
 
 ## Installation
 

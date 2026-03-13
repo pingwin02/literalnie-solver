@@ -1,7 +1,7 @@
 export const PASSWORD_LENGTH = 5;
 export const MAX_ROWS = 6;
 export const NON_GRID_INTERACTIVE_SELECTOR =
-  "button, select, textarea, a, input[type='checkbox'], [contenteditable='true']";
+  "input, button, select, textarea, a, [contenteditable='true']";
 
 export const createEmptyGrid = () =>
   Array.from({ length: MAX_ROWS }, () =>
@@ -47,8 +47,8 @@ export const getColumnLetterGroupColor = (
     }
 
     const cell = gridData[rowIndex][colIndex];
-    if (cell.letter === letter && cell.color !== "gray") {
-      return cell.color;
+    if (cell.letter === letter && cell.color === "green") {
+      return "green";
     }
   }
 
@@ -57,14 +57,20 @@ export const getColumnLetterGroupColor = (
 
 export const applyColorToColumnLetterGroup = (
   gridData,
+  rowIndex,
   colIndex,
   letter,
   color
 ) => {
-  for (let rowIndex = 0; rowIndex < MAX_ROWS; rowIndex++) {
-    const cell = gridData[rowIndex][colIndex];
-    if (cell.letter === letter) {
-      cell.color = color;
+  const isGreenInvolved =
+    color === "green" || gridData[rowIndex][colIndex].color === "green";
+  gridData[rowIndex][colIndex].color = color;
+
+  if (isGreenInvolved) {
+    for (let r = 0; r < MAX_ROWS; r++) {
+      if (gridData[r][colIndex].letter === letter) {
+        gridData[r][colIndex].color = color;
+      }
     }
   }
 
@@ -83,7 +89,7 @@ export const syncColumnLetterGroups = (gridData) => {
       }
 
       const key = `${colIndex}:${cell.letter}`;
-      if (!sharedColors.has(key) && cell.color !== "gray") {
+      if (!sharedColors.has(key) && cell.color === "green") {
         sharedColors.set(key, cell.color);
       }
     }
@@ -95,10 +101,12 @@ export const syncColumnLetterGroups = (gridData) => {
         return { ...cell, color: "gray" };
       }
 
-      return {
-        ...cell,
-        color: sharedColors.get(`${colIndex}:${cell.letter}`) ?? "gray"
-      };
+      const sharedColor = sharedColors.get(`${colIndex}:${cell.letter}`);
+      if (sharedColor === "green") {
+        return { ...cell, color: "green" };
+      }
+
+      return { ...cell };
     })
   );
 };

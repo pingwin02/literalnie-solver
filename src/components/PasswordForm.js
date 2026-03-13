@@ -156,6 +156,12 @@ function PasswordForm() {
         setIsGridSelected(false);
       }
 
+      const isMobile =
+        window.innerWidth <= 550 ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+
       if (dictionaryMode) {
         if (target === dictionaryInputRef.current) return;
         if (
@@ -165,6 +171,8 @@ function PasswordForm() {
         ) {
           return;
         }
+
+        if (isMobile) return;
 
         setTimeout(() => {
           dictionaryInputRef.current?.focus();
@@ -176,6 +184,8 @@ function PasswordForm() {
       if (target.closest(NON_GRID_INTERACTIVE_SELECTOR)) {
         return;
       }
+
+      if (isMobile) return;
 
       const firstEmptyCell = getNextEditablePosition(grid);
       if (firstEmptyCell) {
@@ -274,6 +284,7 @@ function PasswordForm() {
           newGrid[row][col].letter = hint;
           const updatedGrid = applyColorToColumnLetterGroup(
             newGrid,
+            row,
             col,
             hint,
             "green"
@@ -308,6 +319,7 @@ function PasswordForm() {
 
       return applyColorToColumnLetterGroup(
         newGrid,
+        row,
         col,
         cell.letter,
         nextColor
@@ -533,6 +545,7 @@ function PasswordForm() {
           newGrid[row][col].letter = hint;
           const updatedGrid = applyColorToColumnLetterGroup(
             newGrid,
+            row,
             col,
             hint,
             "green"
