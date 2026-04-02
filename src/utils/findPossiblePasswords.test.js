@@ -20,7 +20,7 @@ describe("findPossiblePasswords - English", () => {
       dictionaryMode: false
     });
 
-    expect(result).toEqual(["cabin", "caper", "candy"]);
+    expect(result).toEqual(["cabin", "candy", "caper"]);
   });
 
   test("handles dictionary mode rules", () => {
@@ -101,7 +101,7 @@ describe("findPossiblePasswords - English", () => {
       dictionaryMode: false
     });
 
-    expect(result).toEqual(["xerox", "crept"]);
+    expect(result).toEqual(["crept", "xerox"]);
   });
 });
 
@@ -139,7 +139,7 @@ describe("findPossiblePasswords - Polish", () => {
       dictionaryMode: false
     });
 
-    expect(result).toEqual(["banan", "kajak", "tatar", "karta"]);
+    expect(result).toEqual(["karta", "tatar", "kajak", "banan"]);
   });
 
   test("applies upper bounds from gray+yellow mix", () => {
@@ -154,6 +154,6 @@ describe("findPossiblePasswords - Polish", () => {
       dictionaryMode: false
     });
 
-    expect(result).toEqual(["tanie", "salto"]);
+    expect(result).toEqual(["salto", "tanie"]);
   });
 });

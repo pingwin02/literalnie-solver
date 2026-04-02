@@ -60,7 +60,7 @@ export const findPossiblePasswords = ({
     }
   }
 
-  return words.filter((word) => {
+  const possiblePasswords = words.filter((word) => {
     if (word.length !== passwordLength) {
       return false;
     }
@@ -94,5 +94,29 @@ export const findPossiblePasswords = ({
     }
 
     return true;
+  });
+
+  const letterFrequencies = {};
+
+  for (const word of possiblePasswords) {
+    for (const letter of new Set(word)) {
+      letterFrequencies[letter] = (letterFrequencies[letter] || 0) + 1;
+    }
+  }
+
+  const getWordScore = (word) =>
+    [...new Set(word)].reduce(
+      (score, letter) => score + (letterFrequencies[letter] || 0),
+      0
+    );
+
+  return possiblePasswords.sort((firstWord, secondWord) => {
+    const scoreDifference = getWordScore(secondWord) - getWordScore(firstWord);
+
+    if (scoreDifference !== 0) {
+      return scoreDifference;
+    }
+
+    return firstWord.localeCompare(secondWord);
   });
 };
